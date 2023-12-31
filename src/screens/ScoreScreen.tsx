@@ -1,19 +1,17 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
 import React from 'react'
 import { colors } from '../utils/colors';
+import { ProfileNavigationProp } from '../SimonSaysApp';
 
-type ScoreScreenProps = {
-
-}
-export const ScoreScreen: React.FC<ScoreScreenProps> = ({ }) => {
+export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     return (
         <View style={styles.mainContainer}>
             <Text>ScoreScreen</Text>
             <TouchableOpacity
                 style={{}}
-                onPress={() => console.log("Fav Article, Navigate to Article")}>
+                onPress={() => navigation.navigate('GameScreen')}>
                 {/* colorImage */}
-                <Text>Button</Text>
+                <Text style={styles.text}>Start A new Game</Text>
             </TouchableOpacity>
         </View>
     );
@@ -25,5 +23,10 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: colors.gray
+    },
+    text: {
+        color: colors.primaryBlue,
+        fontSize: 22,
+        fontWeight: '600'
     },
 })

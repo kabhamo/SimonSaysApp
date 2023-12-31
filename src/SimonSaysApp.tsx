@@ -9,6 +9,7 @@ import PlayIcon from 'react-native-vector-icons/Entypo'
 import ScoreBoardIcon from 'react-native-vector-icons/Foundation'
 import LineIcon from 'react-native-vector-icons/FontAwesome5'
 import { colors } from './utils/colors';
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 enableScreens();
 
@@ -16,6 +17,8 @@ type RootStackParamList = {
     GameScreen: undefined;
     ScoreScreen: undefined;
 };
+export type ProfileNavigationProp =
+    BottomTabScreenProps<RootStackParamList>
 
 const RootTab = createBottomTabNavigator<RootStackParamList>();
 
