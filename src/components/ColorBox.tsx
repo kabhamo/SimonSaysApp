@@ -1,33 +1,20 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useEffect, useRef } from 'react'
-import { Player } from '@react-native-community/audio-toolkit';
+import { View, StyleSheet, TouchableOpacity } from 'react-native'
+import React from 'react'
 
 type ColorBoxProps = {
     color: string
-    callBack: (color: string) => void //!change it with the setState method
-    gamePattern: string[]
-    setColorState: () => ()
+    callBackClick: (color: string) => void
 }
 
-export const ColorBox: React.FC<ColorBoxProps> = ({ color, callBack, gamePattern }) => {
-    const btnRef = useRef(null);
+export const ColorBox: React.FC<ColorBoxProps> = ({ color, callBackClick }) => {
 
-    const handler = () => {
-        //const player = new Player(`${color}.mp3`).play((error) => console.log(error?.message))
-        callBack(color)
-    }
+    const boxColorClickHandler = (color: string) => callBackClick(color);
 
-    // interval work for sec forEach item in gamePattern
-    // play sound of the color
-    // change opacity of the box color
-
-
-    //<View style={[styles.mainContainer, color == 'red' ? { opacity: 0.1 } : {}]}>
     return (
         <View style={[styles.mainContainer, {}]}>
             <TouchableOpacity
                 style={{}}
-                onPress={() => handler()}>
+                onPress={() => boxColorClickHandler(color)}>
                 <View style={[styles.gameColorsBox, { backgroundColor: color }]}></View>
             </TouchableOpacity>
         </View>
