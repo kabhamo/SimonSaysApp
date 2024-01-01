@@ -15,7 +15,7 @@ const WRONG_SOUND: string = 'wrong';
 
 export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [showScore, setShowScore] = useState<boolean>(false);
-    const [level, setLevel] = useState<number>(0);
+    const [level, setLevel] = useState<number>(-1);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
     const dispatch = useDispatch();
