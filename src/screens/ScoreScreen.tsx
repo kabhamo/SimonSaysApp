@@ -1,9 +1,18 @@
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { colors } from '../utils/colors';
 import { ProfileNavigationProp } from '../SimonSaysApp';
+import type { RootState } from '../store/store';
+import { useSelector } from 'react-redux';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
+    const scoreArray: number[] = useSelector((state: RootState) => state.scoreReducer.scoreArray);
+
+    useEffect(() => {
+        console.log("useEffect ScoreScreen")
+        console.log("scoreArray updated: ", scoreArray)
+    }, [scoreArray]);
+
     return (
         <View style={styles.mainContainer}>
             <Text>ScoreScreen</Text>
