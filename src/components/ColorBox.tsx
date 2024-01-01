@@ -4,17 +4,17 @@ import { Player } from '@react-native-community/audio-toolkit';
 
 type ColorBoxProps = {
     color: string
-    callBack: (color: string) => void
+    callBack: (color: string) => void //!change it with the setState method
     gamePattern: string[]
+    setColorState: () => ()
 }
 
 export const ColorBox: React.FC<ColorBoxProps> = ({ color, callBack, gamePattern }) => {
     const btnRef = useRef(null);
 
     const handler = () => {
-        const player = new Player(`${color}.mp3`).play((error) => console.log(error?.message))
+        //const player = new Player(`${color}.mp3`).play((error) => console.log(error?.message))
         callBack(color)
-
     }
 
     // interval work for sec forEach item in gamePattern
@@ -45,13 +45,3 @@ const styles = StyleSheet.create({
         height: 100,
     }
 })
-
-//this.player = new Player(filename, {
-//    autoDestroy: false
-//  }).prepare((err) => {
-//    if (err) {
-//      console.log('error at _reloadPlayer():');
-//      console.log(err);
-//    } else {
-//      this.player.looping = this.state.loopButtonStatus;
-//    }
