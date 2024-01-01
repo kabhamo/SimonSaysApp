@@ -3,7 +3,8 @@ import React, { useState } from 'react'
 import { colors } from '../utils/colors'
 import { ColorBox } from '../components/ColorBox'
 import { ProfileNavigationProp } from '../SimonSaysApp';
-import { Player } from '@react-native-community/audio-toolkit';
+//import { Player } from '@react-native-community/audio-toolkit';
+import Sound from 'react-native-sound';
 import { useDispatch } from 'react-redux';
 import { setScoreArray } from '../store/score/scoreSlice';
 
@@ -12,6 +13,7 @@ let gamePattern: string[] = [];
 let userClickedPattern: string[] = [];
 const GAME_OVER: string = "Game Over, Press Any Key to Restart";
 const WRONG_SOUND: string = 'wrong';
+Sound.setCategory('Playback');
 
 export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [showScore, setShowScore] = useState<boolean>(false);
@@ -102,8 +104,13 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
 
     //Play sound method
     const playSound = (color: string) => {
-        const player = new Player(`${color}.mp3`);
-        player.play((error) => console.log("playSound: ", error?.message))
+        let player = new Sound(`${color}.mp3`, Sound.MAIN_BUNDLE, (error) => {
+            if (error) {
+                console.log('failed to load the sound', error);
+                return;
+            }
+            player.play((msg) => console.log("playSound: ", msg))
+        });
     }
 
     return (
