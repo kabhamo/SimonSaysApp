@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
 import React, { useState } from 'react'
 import { colors } from '../utils/colors'
 import { ColorBox } from '../components/ColorBox'
@@ -7,6 +7,7 @@ import { ProfileNavigationProp } from '../SimonSaysApp';
 import Sound from 'react-native-sound';
 import { useDispatch } from 'react-redux';
 import { setScoreArray } from '../store/score/scoreSlice';
+import { setGameOverState } from '../store/game/gameSlice';
 
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
 let gamePattern: string[] = [];
@@ -22,11 +23,6 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
     const dispatch = useDispatch();
 
-    //If the user fails, navigate to the results screen
-    //with a popup(use a RN modal) for entering the
-    //players name.
-
-
     //Starting point logic - like a Main function
     const startClickHandler = () => {
         //start the game
@@ -34,8 +30,10 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         // show the level
         setShowScore(prev => !prev);
         // change start the game state
-
         setIsGameStarted(prev => !prev)
+        setShowGameOver(prev => !prev)
+        //update the redux
+        dispatch(setGameOverState(showGameOver))
         // start the gamePattern
     }
 
@@ -52,7 +50,6 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             setTimeout(() => playSound(item), (index + 1) * 500)
             //! add css styles
         })
-        console.log("waiting for the user...")
     }
 
     //User click on a color boxes
@@ -96,10 +93,12 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         // send the gameOver state to colorBoxes so it will be disabled
         //redux storing the score
         dispatch(setScoreArray(level))
-        setLevel(0);
+        dispatch(setGameOverState(showGameOver))
         //New game pattern
+        setLevel(0);
         gamePattern = [];
         // navigation
+        navigation.navigate('ScoreScreen')
     }
 
     //Play sound method
@@ -114,7 +113,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.mainContainer}>
+        <SafeAreaView style={styles.mainContainer}>
 
             {/* //! add the score and some styles */}
             {showScore ?
@@ -139,7 +138,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
                     <Text style={styles.text}>Start The Game</Text>
                 </TouchableOpacity>
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
