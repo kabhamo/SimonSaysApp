@@ -1,12 +1,11 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native'
-import React, { useState } from 'react'
-import { colors } from '../utils/colors'
-import { ColorBox } from '../components/ColorBox'
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { colors } from '../utils/colors';
+import { ColorBox } from '../components/ColorBox';
 import { ProfileNavigationProp } from '../SimonSaysApp';
-//import { Player } from '@react-native-community/audio-toolkit';
 import Sound from 'react-native-sound';
 import { useDispatch } from 'react-redux';
-import { setScoreArray } from '../store/score/scoreSlice';
+import { setScore } from '../store/score/scoreSlice';
 import { setGameOverState } from '../store/game/gameSlice';
 
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
@@ -92,7 +91,8 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         // change the UI
         // send the gameOver state to colorBoxes so it will be disabled
         //redux storing the score
-        dispatch(setScoreArray(level))
+        dispatch(setScore(level)) //! we may need to delete the scoreArraySlice
+        //dispatch(setUserData({ score: level }))
         dispatch(setGameOverState(showGameOver))
         //New game pattern
         setLevel(0);
