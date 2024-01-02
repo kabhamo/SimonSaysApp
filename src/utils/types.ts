@@ -19,3 +19,9 @@ export type UserState = {
 export interface ScoreData{ 
     data: UserState[]
 }
+
+
+//====Custom ScrollView Type======
+export type CustomScrollViewProps = {
+    gameData: UserState[]
+}

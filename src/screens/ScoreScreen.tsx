@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, SectionList } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../utils/colors';
 import { ProfileNavigationProp } from '../SimonSaysApp';
@@ -8,6 +8,8 @@ import { storeLocalData, getLocalData } from '../utils/asyncStorageService';
 import { CustomModal } from '../components/CustomModal';
 import { setUserData } from '../store/user/userSlice';
 import { UserState } from '../utils/types';
+import { setGameOverState } from '../store/game/gameSlice';
+import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score); //! todelete
@@ -23,14 +25,15 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
     //        if (currentScore > 0) {
     //            await storeLocalData(currentScore);
     //        }
-    //    }
+    //    }   
     //    storeData()
-    //}, [scoreArray]);
+    //}, [scoreArray]);  
 
     console.log(gameData)
     useEffect(() => {
         console.log('gameOverState: ', gameOverState)
         if (gameOverState) {
+            dispatch(setGameOverState(false))
             setShowModal(true)
         }
     }, [gameOverState])
@@ -73,24 +76,7 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
             </View>
 
             <View style={styles.scoreListContainer}>
-                {/*<SectionList
-                    sections={gameData}
-                    keyExtractor={(item, index) => JSON.stringify(item + index)}
-                    renderItem={({ item }) => (
-                        <View>
-                            {item ? <Text>{item}</Text> : <Text>No data</Text>}
-                        </View>
-                    )}
-                    renderSectionHeader={({ section: { userName, data } }) => (
-                        <View>
-                            {userName ? <Text>{userName}</Text> : <Text>No data</Text>}
-                            {data.map((score) => (
-                                <Text>{score}</Text>
-                            ))}
-
-                        </View>
-                    )}
-                />*/}
+                <CustomScrollView gameData={gameData} />
             </View>
 
             <CustomModal showModal={showModal} setInputName={setInputName} saveInputNameHandler={saveInputNameHandler} />
