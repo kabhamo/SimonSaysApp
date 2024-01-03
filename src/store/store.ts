@@ -1,9 +1,14 @@
 import { configureStore } from '@reduxjs/toolkit'
-import { gameSlice } from './game/gameSlice'
+import scoreSlice from './score/scoreSlice'
+import gameSlice from './game/gameSlice'
+import userSlice from './user/userSlice'
+
 
 export const store = configureStore({
   reducer: {
-    game: gameSlice.reducer
+    scoreReducer: scoreSlice,
+    gameReducer: gameSlice,
+    userReducer: userSlice
   },
 })
 

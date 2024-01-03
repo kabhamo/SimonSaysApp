@@ -2,12 +2,14 @@ import { View, Text, StyleSheet } from 'react-native'
 import React from 'react'
 import { NavigationContainer } from '@react-navigation/native';
 import { enableScreens } from 'react-native-screens';
-//import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { GameScreen } from './screens/GameScreen';
 import { ScoreScreen } from './screens/ScoreScreen';
 import PlayIcon from 'react-native-vector-icons/Entypo'
-import ScoreBoardIcon from 'react-native-vector-icons/MaterialCommunityIcons'
+import ScoreBoardIcon from 'react-native-vector-icons/Foundation'
+import LineIcon from 'react-native-vector-icons/FontAwesome5'
+import { colors } from './utils/colors';
+import type { BottomTabScreenProps } from "@react-navigation/bottom-tabs";
 
 enableScreens();
 
@@ -15,9 +17,9 @@ type RootStackParamList = {
     GameScreen: undefined;
     ScoreScreen: undefined;
 };
-//scoreboard
+export type ProfileNavigationProp =
+    BottomTabScreenProps<RootStackParamList>
 
-//const RootStack = createNativeStackNavigator<RootStackParamList>();
 const RootTab = createBottomTabNavigator<RootStackParamList>();
 
 export function SimonSaysApp(): JSX.Element {
@@ -26,7 +28,19 @@ export function SimonSaysApp(): JSX.Element {
             <RootTab.Navigator
                 initialRouteName="GameScreen"
                 screenOptions={{
-
+                    tabBarLabel: (e) => (
+                        e.focused ?
+                            <LineIcon
+                                style={{ marginTop: -20, paddingBottom: 10 }}
+                                name="window-minimize"
+                                size={28}
+                                color={e.focused ? colors.gray : colors.grayDark}
+                            />
+                            : null
+                    )
+                }}
+                tabBarOptions={{
+                    style: styles.tabBarStyle
                 }}
             >
                 <RootTab.Screen name="GameScreen" component={GameScreen} options={{
@@ -34,16 +48,16 @@ export function SimonSaysApp(): JSX.Element {
                         <PlayIcon
                             name="game-controller"
                             size={28}
-                            color={e.focused ? 'red' : 'green'}
+                            color={e.focused ? colors.gray : colors.grayDark}
                         />
                     )
                 }} />
                 <RootTab.Screen name="ScoreScreen" component={ScoreScreen} options={{
                     tabBarIcon: (e) => (
                         <ScoreBoardIcon
-                            name="scoreboard"
+                            name="results"
                             size={28}
-                            color={e.focused ? 'red' : 'green'}
+                            color={e.focused ? colors.gray : colors.grayDark}
                         />
                     )
                 }} />
@@ -58,4 +72,11 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
     },
+    tabBarStyle: {
+        backgroundColor: colors.primaryBlack,
+        height: '8%',
+        borderTopEndRadius: 10,
+        borderTopStartRadius: 10,
+        borderColor: colors.gray,
+    }
 })

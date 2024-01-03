@@ -1,19 +1,26 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
+import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 // Define a type for the slice state
 interface GameState {
-    gameName: string
+    isGameOver: boolean
 }
 
 // Define the initial state using that type
 const initialState: GameState = {
-    gameName: "testing"
+    isGameOver: false
 }
 
 export const gameSlice = createSlice({
-  name: 'userCredential',
+  name: 'game',
   initialState,
-    reducers: {},
-    extraReducers(builder) {},
-    
+    reducers: {
+        setGameOverState: (state, action: PayloadAction<boolean>) => {
+            state.isGameOver = action.payload;
+          },
+    },
 })
+
+// Action creators are generated for each case reducer function
+export const { setGameOverState } = gameSlice.actions
+
+export default gameSlice.reducer
