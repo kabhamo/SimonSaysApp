@@ -4,35 +4,29 @@ import { opacity } from 'react-native-reanimated/lib/typescript/reanimated2/Colo
 
 type ColorBoxProps = {
     color: string
-    currentColor: string[]
+    currentColors: string[]
     callBackClick: (color: string) => void
 }
 
-export const ColorBox: React.FC<ColorBoxProps> = ({ color, currentColor, callBackClick }) => {
+export const ColorBox: React.FC<ColorBoxProps> = ({ color, currentColors, callBackClick }) => {
 
-    const [test, setTest] = useState<boolean>(false)
+    const [animation, setAnimation] = useState<boolean>(false)
     const boxColorClickHandler = (color: string) => callBackClick(color);
 
-    const click = {
-        opacity: 0.5
-    }
-    const unClick = {
-        opacity: 1
-    }
     useEffect(() => {
         //console.log(currentColor.at(currentColor.length - 1))
-        currentColor.map((colorItem, index) => {
+        currentColors.map((colorItem, index) => {
             if (color === colorItem) {
                 console.log('Animation')
-                setTimeout(() => setTest(true), (index + 1) * 500)
-                setTimeout(() => setTest(false), (index + 1) * 650)
+                setTimeout(() => setAnimation(true), (index + 1) * 500)
+                setTimeout(() => setAnimation(false), (index + 1) * 650)
             }
         })
-    }, [currentColor.length])
+    }, [currentColors.length])
 
 
     return (
-        <View style={[styles.mainContainer, test ? click : unClick]}>
+        <View style={[styles.mainContainer, animation ? { opacity: 0.5 } : { opacity: 1 }]}>
             <TouchableOpacity
                 style={{}}
                 onPress={() => boxColorClickHandler(color)}>

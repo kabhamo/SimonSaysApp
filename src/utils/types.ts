@@ -23,5 +23,5 @@ export interface ScoreData{
 
 //====Custom ScrollView Type======
 export type CustomScrollViewProps = {
-    gameData: UserState[]
+    gameData: UserState[] | undefined
 }

@@ -7,9 +7,11 @@ export const CustomScrollView: React.FC<CustomScrollViewProps> = ({ gameData }) 
     return (
         <View style={styles.mainContainer}>
             <ScrollView>
-                {gameData.map(({ data, userName }, index) => {
-                    return <RenderItem key={index} data={data} userName={userName} index={index} />
-                })}
+                {gameData ?
+                    gameData.map(({ data, userName }, index) => {
+                        return <RenderItem key={index} data={data} userName={userName} index={index} />
+                    })
+                    : <Text>No Data Yet</Text>}
             </ScrollView>
         </View>
     );

@@ -20,33 +20,31 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [level, setLevel] = useState<number>(-1);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
-    const [currentColor, setCuurrentColor] = useState<string[]>([])
+    const [currentColors, setCurrentColors] = useState<string[]>([])
     const dispatch = useDispatch();
 
     //Starting point logic - like a Main function
     const startClickHandler = () => {
-        //start the game
+        //start the game logic
         nextSequence();
         // show the level
         setShowScore(prev => !prev);
-        // change start the game state
-        setIsGameStarted(prev => !prev)
-        setShowGameOver(prev => !prev)
-        //update the redux
-        dispatch(setGameOverState(showGameOver))
-        // start the gamePattern
+        // Now every click will be recognized and effect the logic
+        setIsGameStarted(prev => !prev);
+        // When chaged the scoreScreen will show the modal 
+        setShowGameOver(prev => !prev);
+        //update the redux so ScoreScreen rerender the changes
+        dispatch(setGameOverState(showGameOver));
     }
 
     //The level up game sequence method
     const nextSequence = () => {
         userClickedPattern = [];
         setLevel(prev => prev + 1);
-        console.log("New level: ", level)
         const randomNumber: number = Math.floor(Math.random() * 4);
         const randomChosenColor: string = buttonColors[randomNumber];
         gamePattern.push(randomChosenColor);
-        setCuurrentColor([...gamePattern]) //to treger animation
-        console.log("gamePattern: ", gamePattern)
+        setCurrentColors([...gamePattern]) //to treger animation
         gamePattern.map((item, index) => {
             setTimeout(() => {
                 playSound(item)
@@ -59,7 +57,6 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         if (isGameStarted) {
             userClickedPattern.push(color);
             playSound(color);
-            console.log("userClickPattern: ", userClickedPattern)
             checkAnswer(userClickedPattern.length - 1);
         } else {
             color ? playSound(color) : null;
@@ -71,7 +68,6 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             console.log("success")
             //Start a new sequence level after 1 sec
             if (gamePattern.length == userClickedPattern.length) {
-                console.log("current level: ", level)
                 setTimeout(() => {
                     nextSequence()
                 }, 1000)
@@ -91,17 +87,16 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     //
     const gameOverHandler = () => {
         console.log("Game Over")
-        setShowScore(prev => !prev)
         // change the UI
-        // send the gameOver state to colorBoxes so it will be disabled
-        //redux storing the score
-        dispatch(setScore(level)) //! we may need to delete the scoreArraySlice
-        //dispatch(setUserData({ score: level }))
+        setShowScore(prev => !prev)
+        //share the score with ScoreScreen
+        dispatch(setScore(level))
+        // share the gameOver state with SCoreScreen
         dispatch(setGameOverState(showGameOver))
         //New game pattern
         setLevel(0);
         gamePattern = [];
-        // navigation
+        // navigation to ScoreScreen
         navigation.navigate('ScoreScreen')
     }
 
@@ -119,7 +114,6 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     return (
         <SafeAreaView style={styles.mainContainer}>
 
-            {/* //! add the score and some styles */}
             {showScore ?
                 (<View style={styles.levelTextContainer}>
                     <Text style={styles.text}>{`Level: ${level}`}</Text>
@@ -127,13 +121,13 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
 
 
             <View style={styles.topColorBoxContainer}>
-                <ColorBox color='red' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
-                <ColorBox color='blue' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='red' currentColors={currentColors} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='blue' currentColors={currentColors} callBackClick={colorBoxClickHandler} />
 
             </View>
             <View style={styles.bottomColorBoxContainer}>
-                <ColorBox color='yellow' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
-                <ColorBox color='green' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='yellow' currentColors={currentColors} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='green' currentColors={currentColors} callBackClick={colorBoxClickHandler} />
             </View>
 
             <View style={styles.startBtnContainer}>
