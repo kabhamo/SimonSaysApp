@@ -23,6 +23,8 @@ export const userSlice = createSlice({
                 state.data.map(({ userName, data }) => {
                     if (userName === action.payload.userName) {
                         data.push(action.payload.score)
+                        data.sort();
+                        data.reverse();
                     }
                 })
             } else { 

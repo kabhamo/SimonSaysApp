@@ -12,9 +12,10 @@ import { setGameOverState } from '../store/game/gameSlice';
 import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
-    const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score); //! todelete
+    const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score);
     const gameOverState: boolean = useSelector((state: RootState) => state.gameReducer.isGameOver);
-    const gameData: UserState[] = useSelector((state: RootState) => state.userReducer.data)
+    const gameData: UserState[] = useSelector((state: RootState) => state.userReducer.data);
+    const [localData, setLocalData] = useState<UserState[] | undefined>();
     const [showModal, setShowModal] = useState<boolean>(false)
     const [inputName, setInputName] = useState<string>('')
     const dispatch = useDispatch()
@@ -28,10 +29,16 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
             }
         }
         storeData()
+        const getData = async () => {
+            const response: UserState[] | undefined = await getLocalData();
+            if (response) {
+                setLocalData(response)
+            }
+        }
+        getData();
     }, [gameData]);
 
     useEffect(() => {
-        console.log('gameOverState: ', gameOverState)
         if (gameOverState) {
             dispatch(setGameOverState(false))
             setShowModal(true)
@@ -40,11 +47,9 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
 
     const saveInputNameHandler = () => {
         if (inputName) {
-            console.log("Input Name: ", inputName)
-            //save it in redux
-            console.log("Adding user: ", inputName, " scored: ", currentScore)
-            dispatch(setUserData({ userName: inputName, score: currentScore })) //! dispatch(userName, userScore)
-            console.log('close Modal...')
+            //save the data to orgnaized data structure see - (ScoreData type at ./utiles/types)
+            dispatch(setUserData({ userName: inputName, score: currentScore }))
+            // close the modal
             setShowModal(false)
         }
     }
@@ -76,7 +81,7 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
             </View>
 
             <View style={styles.scoreListContainer}>
-                <CustomScrollView gameData={gameData} />
+                <CustomScrollView gameData={localData} />
             </View>
 
             <CustomModal showModal={showModal} setInputName={setInputName} saveInputNameHandler={saveInputNameHandler} />
