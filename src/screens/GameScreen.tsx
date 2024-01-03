@@ -90,7 +90,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         // change the UI
         setShowScore(prev => !prev)
         //share the score with ScoreScreen
-        dispatch(setScore(level))
+        dispatch(setScore(level - 1))
         // share the gameOver state with SCoreScreen
         dispatch(setGameOverState(showGameOver))
         //New game pattern
@@ -131,7 +131,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             </View>
 
             <View style={styles.startBtnContainer}>
-                <SimonSaysButton title='Play' textColorStyleType={{ color: colors.white }} backgroundColorStyleType={{ backgroundColor: colors.primaryBlue }} onPress={startClickHandler} />
+                <SimonSaysButton title='Play' textColorStyleType={{ color: colors.white }} backgroundColorStyleType={{ backgroundColor: colors.primaryBlue }} onPress={startClickHandler} disable={isGameStarted} />
             </View>
         </SafeAreaView>
     );
