@@ -1,5 +1,5 @@
 import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { colors } from '../utils/colors';
 import { ColorBox } from '../components/ColorBox';
 import { ProfileNavigationProp } from '../SimonSaysApp';
@@ -8,6 +8,9 @@ import { useDispatch } from 'react-redux';
 import { setScore } from '../store/score/scoreSlice';
 import { setGameOverState } from '../store/game/gameSlice';
 import SimonSaysButton from '../components/CustomButton';
+import { getLocalData } from '../utils/asyncStorageService';
+import { UserState } from '../utils/types';
+import { updateUserData } from '../store/user/userSlice';
 
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
 let gamePattern: string[] = [];
@@ -22,6 +25,15 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
     const [currentColors, setCurrentColors] = useState<string[]>([])
     const dispatch = useDispatch();
+
+    useEffect(() => {
+        const getData = async () => {
+            const response: UserState[] | undefined = await getLocalData();
+            //check and update the user redux state from previus games's data
+            dispatch(updateUserData(response))
+        }
+        getData()
+    }, [])
 
     //Starting point logic - like a Main function
     const startClickHandler = () => {
