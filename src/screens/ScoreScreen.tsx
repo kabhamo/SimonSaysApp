@@ -10,6 +10,7 @@ import { setUserData } from '../store/user/userSlice';
 import { UserState } from '../utils/types';
 import { setGameOverState } from '../store/game/gameSlice';
 import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
+import { filterConfig } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score); //! todelete

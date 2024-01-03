@@ -11,7 +11,6 @@ import { setGameOverState } from '../store/game/gameSlice';
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
 let gamePattern: string[] = [];
 let userClickedPattern: string[] = [];
-const GAME_OVER: string = "Game Over, Press Any Key to Restart";
 const WRONG_SOUND: string = 'wrong';
 Sound.setCategory('Playback');
 
@@ -20,6 +19,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [level, setLevel] = useState<number>(-1);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
+    const [currentColor, setCuurrentColor] = useState<string[]>([])
     const dispatch = useDispatch();
 
     //Starting point logic - like a Main function
@@ -44,10 +44,12 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         const randomNumber: number = Math.floor(Math.random() * 4);
         const randomChosenColor: string = buttonColors[randomNumber];
         gamePattern.push(randomChosenColor);
+        setCuurrentColor([...gamePattern]) //to treger animation
         console.log("gamePattern: ", gamePattern)
         gamePattern.map((item, index) => {
-            setTimeout(() => playSound(item), (index + 1) * 500)
-            //! add css styles
+            setTimeout(() => {
+                playSound(item)
+            }, (index + 1) * 500)
         })
     }
 
@@ -88,6 +90,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     //
     const gameOverHandler = () => {
         console.log("Game Over")
+        setShowScore(prev => !prev)
         // change the UI
         // send the gameOver state to colorBoxes so it will be disabled
         //redux storing the score
@@ -123,13 +126,13 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
 
 
             <View style={styles.topColorBoxContainer}>
-                <ColorBox color='red' callBackClick={colorBoxClickHandler} />
-                <ColorBox color='blue' callBackClick={colorBoxClickHandler} />
+                <ColorBox color='red' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='blue' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
 
             </View>
             <View style={styles.bottomColorBoxContainer}>
-                <ColorBox color='yellow' callBackClick={colorBoxClickHandler} />
-                <ColorBox color='green' callBackClick={colorBoxClickHandler} />
+                <ColorBox color='yellow' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='green' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
             </View>
 
             <View style={styles.startBtnContainer}>
