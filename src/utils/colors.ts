@@ -8,5 +8,6 @@ export const colors = {
     grayDark:"#7F8487",
     gray: "#D9DBE9",
     white: "#F8F8FF",
+    renderItem: '#C3EDC0',
     error:"#FD5959"
 }

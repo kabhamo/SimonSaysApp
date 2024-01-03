@@ -2,25 +2,25 @@ import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 
 // Define a type for the slice state
 interface ScoreState {
-    scoreArray: number[]
+    score: number
 }
 
 // Define the initial state using that type
 const initialState: ScoreState = {
-    scoreArray: []
+    score: -1
 }
 
 export const scoreSlice = createSlice({
   name: 'score',
   initialState,
     reducers: {
-        setScoreArray: (state, action: PayloadAction<number>) => {
-            state.scoreArray.push(action.payload)
+        setScore: (state, action: PayloadAction<number>) => {
+            state.score = action.payload
           },
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setScoreArray } = scoreSlice.actions
+export const { setScore } = scoreSlice.actions
 
 export default scoreSlice.reducer

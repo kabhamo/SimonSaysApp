@@ -1,17 +1,17 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
-import React, { useState } from 'react'
-import { colors } from '../utils/colors'
-import { ColorBox } from '../components/ColorBox'
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
+import React, { useState } from 'react';
+import { colors } from '../utils/colors';
+import { ColorBox } from '../components/ColorBox';
 import { ProfileNavigationProp } from '../SimonSaysApp';
-//import { Player } from '@react-native-community/audio-toolkit';
 import Sound from 'react-native-sound';
 import { useDispatch } from 'react-redux';
-import { setScoreArray } from '../store/score/scoreSlice';
+import { setScore } from '../store/score/scoreSlice';
+import { setGameOverState } from '../store/game/gameSlice';
+import SimonSaysButton from '../components/CustomButton';
 
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
 let gamePattern: string[] = [];
 let userClickedPattern: string[] = [];
-const GAME_OVER: string = "Game Over, Press Any Key to Restart";
 const WRONG_SOUND: string = 'wrong';
 Sound.setCategory('Playback');
 
@@ -20,12 +20,8 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const [level, setLevel] = useState<number>(-1);
     const [isGameStarted, setIsGameStarted] = useState<boolean>(false);
     const [showGameOver, setShowGameOver] = useState<boolean>(false)
+    const [currentColor, setCuurrentColor] = useState<string[]>([])
     const dispatch = useDispatch();
-
-    //If the user fails, navigate to the results screen
-    //with a popup(use a RN modal) for entering the
-    //players name.
-
 
     //Starting point logic - like a Main function
     const startClickHandler = () => {
@@ -34,8 +30,10 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         // show the level
         setShowScore(prev => !prev);
         // change start the game state
-
         setIsGameStarted(prev => !prev)
+        setShowGameOver(prev => !prev)
+        //update the redux
+        dispatch(setGameOverState(showGameOver))
         // start the gamePattern
     }
 
@@ -47,12 +45,13 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
         const randomNumber: number = Math.floor(Math.random() * 4);
         const randomChosenColor: string = buttonColors[randomNumber];
         gamePattern.push(randomChosenColor);
+        setCuurrentColor([...gamePattern]) //to treger animation
         console.log("gamePattern: ", gamePattern)
         gamePattern.map((item, index) => {
-            setTimeout(() => playSound(item), (index + 1) * 500)
-            //! add css styles
+            setTimeout(() => {
+                playSound(item)
+            }, (index + 1) * 500)
         })
-        console.log("waiting for the user...")
     }
 
     //User click on a color boxes
@@ -92,14 +91,18 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     //
     const gameOverHandler = () => {
         console.log("Game Over")
+        setShowScore(prev => !prev)
         // change the UI
         // send the gameOver state to colorBoxes so it will be disabled
         //redux storing the score
-        dispatch(setScoreArray(level))
-        setLevel(0);
+        dispatch(setScore(level)) //! we may need to delete the scoreArraySlice
+        //dispatch(setUserData({ score: level }))
+        dispatch(setGameOverState(showGameOver))
         //New game pattern
+        setLevel(0);
         gamePattern = [];
         // navigation
+        navigation.navigate('ScoreScreen')
     }
 
     //Play sound method
@@ -114,7 +117,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     }
 
     return (
-        <View style={styles.mainContainer}>
+        <SafeAreaView style={styles.mainContainer}>
 
             {/* //! add the score and some styles */}
             {showScore ?
@@ -124,22 +127,19 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
 
 
             <View style={styles.topColorBoxContainer}>
-                <ColorBox color='red' callBackClick={colorBoxClickHandler} />
-                <ColorBox color='blue' callBackClick={colorBoxClickHandler} />
+                <ColorBox color='red' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='blue' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
 
             </View>
             <View style={styles.bottomColorBoxContainer}>
-                <ColorBox color='yellow' callBackClick={colorBoxClickHandler} />
-                <ColorBox color='green' callBackClick={colorBoxClickHandler} />
+                <ColorBox color='yellow' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
+                <ColorBox color='green' currentColor={currentColor} callBackClick={colorBoxClickHandler} />
             </View>
 
             <View style={styles.startBtnContainer}>
-                <TouchableOpacity
-                    onPress={() => startClickHandler()}>
-                    <Text style={styles.text}>Start The Game</Text>
-                </TouchableOpacity>
+                <SimonSaysButton title='Play' textColorStyleType={{ color: colors.white }} backgroundColorStyleType={{ backgroundColor: colors.primaryBlue }} onPress={startClickHandler} />
             </View>
-        </View>
+        </SafeAreaView>
     );
 }
 
@@ -155,22 +155,19 @@ const styles = StyleSheet.create({
         marginHorizontal: '10%',
         flexDirection: 'row',
         marginVertical: '10%',
-        //backgroundColor: 'black',
     },
     bottomColorBoxContainer: {
         flex: 0.1,
         marginHorizontal: '10%',
         marginVertical: '10%',
         flexDirection: 'row',
-        //backgroundColor: 'pink',
     },
     startBtnContainer: {
         flex: 0.1,
-        //backgroundColor: 'pink',
+        marginTop: '5%'
     },
     levelTextContainer: {
         flex: 0.1,
-        //backgroundColor: 'pink',
     },
     text: {
         color: colors.primaryBlue,

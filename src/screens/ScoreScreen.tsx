@@ -1,48 +1,86 @@
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native'
+import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView, ScrollView } from 'react-native'
 import React, { useEffect, useState } from 'react'
 import { colors } from '../utils/colors';
 import { ProfileNavigationProp } from '../SimonSaysApp';
 import type { RootState } from '../store/store';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { storeLocalData, getLocalData } from '../utils/asyncStorageService';
+import { CustomModal } from '../components/CustomModal';
+import { setUserData } from '../store/user/userSlice';
+import { UserState } from '../utils/types';
+import { setGameOverState } from '../store/game/gameSlice';
+import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
-    const scoreArray: number[] = useSelector((state: RootState) => state.scoreReducer.scoreArray);
+    const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score); //! todelete
+    const gameOverState: boolean = useSelector((state: RootState) => state.gameReducer.isGameOver);
+    const gameData: UserState[] = useSelector((state: RootState) => state.userReducer.data)
     const [showModal, setShowModal] = useState<boolean>(false)
+    const [inputName, setInputName] = useState<string>('')
+    const dispatch = useDispatch()
 
     useEffect(() => {
         const storeData = async () => {
             // Make sure not to replace the data with new empty array
-            if (scoreArray.length) {
-                await storeLocalData(scoreArray);
+            if (currentScore > 0) {
+                console.log('Saving new data...')
+                await storeLocalData(gameData);
             }
         }
         storeData()
-    }, [scoreArray]);
+    }, [gameData]);
 
+    useEffect(() => {
+        console.log('gameOverState: ', gameOverState)
+        if (gameOverState) {
+            dispatch(setGameOverState(false))
+            setShowModal(true)
+        }
+    }, [gameOverState])
+
+    const saveInputNameHandler = () => {
+        if (inputName) {
+            console.log("Input Name: ", inputName)
+            //save it in redux
+            console.log("Adding user: ", inputName, " scored: ", currentScore)
+            dispatch(setUserData({ userName: inputName, score: currentScore })) //! dispatch(userName, userScore)
+            console.log('close Modal...')
+            setShowModal(false)
+        }
+    }
+
+    //! to delete just for testing
     const fun = async () => {
         const result = await getLocalData();
         console.log("getLocalData", result)
-        setShowModal(prev => !prev)
     }
 
-    return (
-        <View style={styles.mainContainer}>
-            <Text>ScoreScreen</Text>
-            <TouchableOpacity
-                style={{}}
-                onPress={() => navigation.navigate('GameScreen')}>
-                {/* colorImage */}
-                <Text style={styles.text}>Start A new Game</Text>
-            </TouchableOpacity>
 
-            <TouchableOpacity
-                style={{}}
-                onPress={() => fun()}>
-                {/* colorImage */}
-                <Text style={styles.text}>getData</Text>
-            </TouchableOpacity>
-        </View>
+    return (
+        <SafeAreaView style={styles.mainContainer}>
+
+            <View style={styles.navigateBtnContainer}>
+                <TouchableOpacity
+                    style={{}}
+                    onPress={() => navigation.navigate('GameScreen')}>
+                    {/* colorImage */}
+                    <Text style={styles.text}>Start A new Game</Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                    style={{}}
+                    onPress={() => fun()}>
+                    {/* colorImage */}
+                    <Text style={styles.text}>getData</Text>
+                </TouchableOpacity>
+            </View>
+
+            <View style={styles.scoreListContainer}>
+                <CustomScrollView gameData={gameData} />
+            </View>
+
+            <CustomModal showModal={showModal} setInputName={setInputName} saveInputNameHandler={saveInputNameHandler} />
+        </SafeAreaView>
     );
 }
 
@@ -52,6 +90,27 @@ const styles = StyleSheet.create({
         justifyContent: 'center',
         alignItems: 'center',
         backgroundColor: colors.gray
+    },
+    navigateBtnContainer: {
+        flex: 0.1,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        backgroundColor: colors.gray,
+        paddingStart: '5%'
+
+    },
+    scoreListContainer: {
+        flex: 0.9,
+        width: '100%',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        paddingVertical: '5%',
+        paddingHorizontal: '5%',
+        borderColor: '#365486',
+        borderWidth: 2,
+        borderRadius: 5,
+        backgroundColor: '#DCF2F1'
     },
     text: {
         color: colors.primaryBlue,
