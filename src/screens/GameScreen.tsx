@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, TouchableOpacity, SafeAreaView } from 'react-native';
+import { View, Text, StyleSheet, SafeAreaView } from 'react-native';
 import React, { useState } from 'react';
 import { colors } from '../utils/colors';
 import { ColorBox } from '../components/ColorBox';
@@ -7,6 +7,7 @@ import Sound from 'react-native-sound';
 import { useDispatch } from 'react-redux';
 import { setScore } from '../store/score/scoreSlice';
 import { setGameOverState } from '../store/game/gameSlice';
+import SimonSaysButton from '../components/CustomButton';
 
 const buttonColors: string[] = ["red", "blue", "green", "yellow"];
 let gamePattern: string[] = [];
@@ -136,10 +137,7 @@ export const GameScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
             </View>
 
             <View style={styles.startBtnContainer}>
-                <TouchableOpacity
-                    onPress={() => startClickHandler()}>
-                    <Text style={styles.text}>Start The Game</Text>
-                </TouchableOpacity>
+                <SimonSaysButton title='Play' textColorStyleType={{ color: colors.white }} backgroundColorStyleType={{ backgroundColor: colors.primaryBlue }} onPress={startClickHandler} />
             </View>
         </SafeAreaView>
     );
@@ -157,22 +155,19 @@ const styles = StyleSheet.create({
         marginHorizontal: '10%',
         flexDirection: 'row',
         marginVertical: '10%',
-        //backgroundColor: 'black',
     },
     bottomColorBoxContainer: {
         flex: 0.1,
         marginHorizontal: '10%',
         marginVertical: '10%',
         flexDirection: 'row',
-        //backgroundColor: 'pink',
     },
     startBtnContainer: {
         flex: 0.1,
-        //backgroundColor: 'pink',
+        marginTop: '5%'
     },
     levelTextContainer: {
         flex: 0.1,
-        //backgroundColor: 'pink',
     },
     text: {
         color: colors.primaryBlue,

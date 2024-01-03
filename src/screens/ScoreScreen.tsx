@@ -10,7 +10,6 @@ import { setUserData } from '../store/user/userSlice';
 import { UserState } from '../utils/types';
 import { setGameOverState } from '../store/game/gameSlice';
 import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
-import { filterConfig } from 'react-native-gesture-handler/lib/typescript/handlers/gestureHandlerCommon';
 
 export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => {
     const currentScore: number = useSelector((state: RootState) => state.scoreReducer.score); //! todelete
@@ -20,17 +19,17 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
     const [inputName, setInputName] = useState<string>('')
     const dispatch = useDispatch()
 
-    //useEffect(() => {
-    //    const storeData = async () => {
-    //        // Make sure not to replace the data with new empty array
-    //        if (currentScore > 0) {
-    //            await storeLocalData(currentScore);
-    //        }
-    //    }   
-    //    storeData()
-    //}, [scoreArray]);  
+    useEffect(() => {
+        const storeData = async () => {
+            // Make sure not to replace the data with new empty array
+            if (currentScore > 0) {
+                console.log('Saving new data...')
+                await storeLocalData(gameData);
+            }
+        }
+        storeData()
+    }, [gameData]);
 
-    console.log(gameData)
     useEffect(() => {
         console.log('gameOverState: ', gameOverState)
         if (gameOverState) {
@@ -40,7 +39,7 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
     }, [gameOverState])
 
     const saveInputNameHandler = () => {
-        if (inputName) { //! should check the currentScore ?
+        if (inputName) {
             console.log("Input Name: ", inputName)
             //save it in redux
             console.log("Adding user: ", inputName, " scored: ", currentScore)
@@ -108,10 +107,10 @@ const styles = StyleSheet.create({
         alignItems: 'flex-start',
         paddingVertical: '5%',
         paddingHorizontal: '5%',
-        borderColor: colors.primaryBlack,
-        borderWidth: 3,
+        borderColor: '#365486',
+        borderWidth: 2,
         borderRadius: 5,
-        backgroundColor: colors.primaryBlue
+        backgroundColor: '#DCF2F1'
     },
     text: {
         color: colors.primaryBlue,

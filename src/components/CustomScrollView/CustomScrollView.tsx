@@ -1,20 +1,14 @@
 import { View, Text, StyleSheet, ScrollView } from 'react-native'
 import React from 'react'
 import { CustomScrollViewProps } from '../../utils/types'
+import { RenderItem } from './RenderItem';
 
 export const CustomScrollView: React.FC<CustomScrollViewProps> = ({ gameData }) => {
     return (
         <View style={styles.mainContainer}>
             <ScrollView>
                 {gameData.map(({ data, userName }, index) => {
-                    return (
-                        <View key={index}>
-                            <Text>{userName}</Text>
-                            {data.map((score, index) => (
-                                <Text key={index}>{score}</Text>
-                            ))}
-                        </View>
-                    );
+                    return <RenderItem data={data} userName={userName} index={index} />
                 })}
             </ScrollView>
         </View>
@@ -25,6 +19,5 @@ const styles = StyleSheet.create({
     mainContainer: {
         flex: 1,
         justifyContent: 'center',
-        alignItems: 'center',
     },
 })

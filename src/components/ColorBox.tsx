@@ -49,7 +49,10 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     gameColorsBox: {
-        width: 100,
-        height: 100,
+        width: 130,
+        height: 130,
+        borderWidth: 3,
+        borderRadius: 5,
+        borderColor: '#7077A1'
     }
 })
