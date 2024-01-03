@@ -6,7 +6,7 @@ import type { RootState } from '../store/store';
 import { useDispatch, useSelector } from 'react-redux';
 import { storeLocalData, getLocalData } from '../utils/asyncStorageService';
 import { CustomModal } from '../components/CustomModal';
-import { setUserData } from '../store/user/userSlice';
+import { setUserData, updateUserData } from '../store/user/userSlice';
 import { UserState } from '../utils/types';
 import { setGameOverState } from '../store/game/gameSlice';
 import { CustomScrollView } from '../components/CustomScrollView/CustomScrollView';
@@ -38,6 +38,7 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
         getData();
     }, [gameData]);
 
+
     useEffect(() => {
         if (gameOverState) {
             dispatch(setGameOverState(false))
@@ -45,8 +46,10 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
         }
     }, [gameOverState])
 
-    const saveInputNameHandler = () => {
+    const saveInputNameHandler = async () => {
         if (inputName) {
+            //check and update the user redux state
+            dispatch(updateUserData(await getLocalDataMethod()))
             //save the data to orgnaized data structure see - (ScoreData type at ./utiles/types)
             dispatch(setUserData({ userName: inputName, score: currentScore }))
             // close the modal
@@ -54,12 +57,10 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
         }
     }
 
-    //! to delete just for testing
-    const fun = async () => {
-        const result = await getLocalData();
-        console.log("getLocalData", result)
+    const getLocalDataMethod = async () => {
+        const response: UserState[] | undefined = await getLocalData();
+        return response
     }
-
 
     return (
         <SafeAreaView style={styles.mainContainer}>
@@ -70,13 +71,6 @@ export const ScoreScreen: React.FC<ProfileNavigationProp> = ({ navigation }) => 
                     onPress={() => navigation.navigate('GameScreen')}>
                     {/* colorImage */}
                     <Text style={styles.text}>Start A new Game</Text>
-                </TouchableOpacity>
-
-                <TouchableOpacity
-                    style={{}}
-                    onPress={() => fun()}>
-                    {/* colorImage */}
-                    <Text style={styles.text}>getData</Text>
                 </TouchableOpacity>
             </View>
 
@@ -123,3 +117,20 @@ const styles = StyleSheet.create({
         fontWeight: '600'
     },
 })
+
+
+//  //retrive the articles from asyncLocalStorage
+//  useEffect(() => {
+//    async function getData() {
+//      // Try fetching articles from API
+//      const articles = await getArticles()
+//      // If it works, then save to local storage
+//      if (articles.length !== 0) {
+//        //store the data in local storage
+//        await storeLocalData(AsyncLocalStorageKeysType.ArticlesKey, articles)
+//      }
+//      // FINALLY, return articles from local storage.
+//      setArticles(await getLocalData(AsyncLocalStorageKeysType.ArticlesKey))
+//    }
+//    getData();
+//  }, [])

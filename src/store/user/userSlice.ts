@@ -1,5 +1,5 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
-import type { ActionSlicePayload, ScoreData, UserState } from '../../utils/types';
+import type { ActionSlicePayload, CustomScrollViewProps, ScoreData, UserState } from '../../utils/types';
 
 // Define the initial state using that type
 const initialState: ScoreData = {
@@ -12,8 +12,8 @@ const initialState: ScoreData = {
 }
 
 export const userSlice = createSlice({
-  name: 'user',
-  initialState,
+    name: 'user',
+    initialState,
     reducers: {
         setUserData: (state, action: PayloadAction<ActionSlicePayload>) => {
             //check if the user has been added to the data structure
@@ -27,7 +27,7 @@ export const userSlice = createSlice({
                         data.reverse();
                     }
                 })
-            } else { 
+            } else {
                 // Create a new user with this payload
                 const newUser: UserState = {
                     userName: action.payload.userName,
@@ -35,11 +35,16 @@ export const userSlice = createSlice({
                 }
                 state.data.push(newUser)
             }
-          },
+        },
+        updateUserData: (state, action: PayloadAction<UserState[] | undefined>) => { 
+            if (action.payload) { 
+                state.data = action.payload
+            }
+        }
     },
 })
 
 // Action creators are generated for each case reducer function
-export const { setUserData } = userSlice.actions
+export const { setUserData, updateUserData } = userSlice.actions
 
 export default userSlice.reducer

@@ -7,6 +7,7 @@ type Props = {
     onPress?: ((event: GestureResponderEvent) => void) | undefined,
     backgroundColorStyleType: { backgroundColor: string },
     textColorStyleType: { color: string }
+    disable: boolean
 }
 
 const SimonSaysButton = (props: Props) => {
@@ -14,7 +15,8 @@ const SimonSaysButton = (props: Props) => {
     return (
         <TouchableOpacity
             style={[styles.btn, props.backgroundColorStyleType]}
-            onPress={props.onPress}>
+            onPress={props.onPress}
+            disabled={props.disable}>
             <Text style={[styles.text, props.textColorStyleType]}>{props.title}</Text>
         </TouchableOpacity>
     )
